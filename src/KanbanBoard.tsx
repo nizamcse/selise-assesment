@@ -6,7 +6,7 @@ import { useContext } from "react"
 import { TaskContext } from "./context/TaskContext"
 
 const KanbanBoard = () => {
-  const { updateTask } = useContext(TaskContext) as ITaskContext
+  const { updateTask, swapIndex } = useContext(TaskContext) as ITaskContext
   const onDragEnd = ({ source, destination, draggableId }: DropResult) => {
     if (destination === undefined || destination === null) return null
     if (
@@ -15,9 +15,12 @@ const KanbanBoard = () => {
     )
       return null
 
-    const currentStatus = destination.droppableId
-    updateTask(draggableId, { status: currentStatus as StatusType })
-    console.log(source, destination, draggableId, "Kanban Nizam")
+    if (source.droppableId === destination.droppableId) {
+      swapIndex(destination.index, source.index)
+    } else {
+      const currentStatus = destination.droppableId
+      updateTask(draggableId, { status: currentStatus as StatusType })
+    }
   }
 
   return (

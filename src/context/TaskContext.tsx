@@ -33,6 +33,14 @@ const TaskProvider: React.FC<Props> = ({ children }) => {
     setOpenFormModal(true)
   }
 
+  const swapIndex = (i: number, j: number) => {
+    const data = [...tasks]
+    const temp = data[i]
+    data[i] = data[j]
+    data[j] = temp
+    setTasks([...data])
+  }
+
   useEffect(() => {
     const localStorageData = localStorage.getItem("__tasks")
     if (localStorageData) {
@@ -57,6 +65,7 @@ const TaskProvider: React.FC<Props> = ({ children }) => {
         onClickEdit,
         handleFormModalOpen,
         handleFormModalClose,
+        swapIndex,
       }}
     >
       {children}

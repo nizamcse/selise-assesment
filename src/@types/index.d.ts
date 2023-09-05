@@ -21,4 +21,5 @@ interface ITaskContext {
   handleFormModalOpen: () => void
   handleFormModalClose: () => void
   onClickEdit: (task: ITask) => void
+  swapIndex: (i: number, j: number) => void
 }
