@@ -15,12 +15,14 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Typography,
 } from "@mui/material"
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import dayjs from "dayjs"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { TaskContext } from "../../context/TaskContext"
+import { useFileUpload } from "../../hooks/useFileUpload"
 
 type Props = {
   onClose: () => void
@@ -57,6 +59,9 @@ const initialVlaue = (): ITask => {
 }
 
 const CreateTaskForm = ({ onClose }: Props) => {
+  const { handleFileChange, blobFile, fileContents, fileDispatch } =
+    useFileUpload({})
+  const [files, setFiles] = useState<ITaskAttachment[]>([])
   const { saveTask, editableTask, updateTask } = useContext(
     TaskContext
   ) as ITaskContext
@@ -73,6 +78,9 @@ const CreateTaskForm = ({ onClose }: Props) => {
 
   const onCreateTask = (data: unknown) => {
     const newTask = data as ITask
+    if (files.length) {
+      newTask.attachments = [...files]
+    }
     if (editableTask?.id) {
       updateTask(editableTask.id, newTask)
     } else {
@@ -91,6 +99,17 @@ const CreateTaskForm = ({ onClose }: Props) => {
   useEffect(() => {
     reset({ ...editableTask })
   }, [editableTask, reset])
+
+  useEffect(() => {
+    if (fileContents?.name && blobFile) {
+      const fileData = {
+        name: fileContents?.name,
+        data: blobFile.toString(),
+      }
+      setFiles((prev) => [...prev, fileData])
+      fileDispatch({ type: "RESET_FILE_STATE", payload: {} })
+    }
+  }, [blobFile, fileContents, fileDispatch])
 
   return (
     <>
@@ -273,6 +292,22 @@ const CreateTaskForm = ({ onClose }: Props) => {
               {errors.endDate.message}
             </FormHelperText>
           )}
+        </Box>
+        <Box py={2}>
+          {files.map((dd, i) => (
+            <Typography key={`${dd.name}-${i}`}>{dd.name}</Typography>
+          ))}
+        </Box>
+        <Box py={2}>
+          <Button component="label" variant="contained" href="#file-upload">
+            Upload a file
+            <input
+              onChange={handleFileChange}
+              hidden
+              accept="image/*"
+              type="file"
+            />
+          </Button>
         </Box>
       </DialogContent>
       <DialogActions>

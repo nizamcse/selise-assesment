@@ -1,6 +1,11 @@
 type PriorityType = "Low" | "Medium" | "High"
 type StatusType = "todo" | "inprogress" | "done"
 
+interface ITaskAttachment {
+  name: string
+  data: string
+}
+
 interface ITask {
   id?: string
   title: string
@@ -10,6 +15,7 @@ interface ITask {
   assignee: string
   startDate: string
   endDate: string
+  attachments?: ITaskAttachment[]
 }
 
 interface ITaskContext {

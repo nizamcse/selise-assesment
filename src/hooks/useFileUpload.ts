@@ -21,7 +21,7 @@ type Props = {
   mimType?: string
 }
 
-export const useFileChange = ({ mimType }: Props) => {
+export const useFileUpload = ({ mimType }: Props) => {
   const [
     {
       fileError,
